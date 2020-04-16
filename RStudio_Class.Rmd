@@ -7,12 +7,14 @@ library('googlesheets4')
 library('dplyr')
 library('lubridate')
 ```
+
 ```{r}
 library(reader)
 exDataPost80s <- read_csv("https://www.dropbox.com/s/rc6t40gsxduysz6/exDataPost80s.csv?dl=1")
 View(exDataPost80s)
-
 ```
+
+
 ## Create objects
 
 ```{r}
@@ -685,9 +687,8 @@ gender <- c("F","F","M","F","M")
 *在econOnly的gender下創造出只要“F”的邏輯向量, econFemaleOnly。
 *選出names中為“經濟學系”且“F”的姓名。
 
-#####0415課程
-
 exercise! 在前面討論使用[[ ]]（同$）及[ ]取一個元素時我們創造了get1與get2兩個物件，請分別由get1, get2取出108-1學期個體經濟學教師姓名。
+
 ```{r}
 listExample <-
   list(
@@ -715,108 +716,12 @@ listExample <-
 str(listExample)
 ```
 
-```{r}
-#712行 only 2 element
-listExample[[1]]
-listExample[[2]]
-```
 
-```{r}
-get1 <- listExample[["學期"]] #拿出來
-get1 <- listExample$`學期` #拿出來 (與723同意義)
-get2 <- listExample["學期"] #只留下
-```
 
-```{r}
-str(get1)
-```
 
-```{r}
-str(get2)
-```
 
-### get1 取出
-```{r}
-get1 $`108-1` -> get1_layer1 #get1_layer1
-str(get1_layer1)
-```
 
-```{r}
-get1_layer1[[1]] -> get1_layer2 #layer_2
-str(get1_layer2)
-```
 
-```{r}
-get1_layer2$teacher
-```
-
-```{r}
-get1 <- listExample[["學期"]] #拿出來
-get1 $`108-1` -> get1_layer1 #get1_layer1
-get1_layer1[[1]] -> get1_layer2 #layer_2
-get1_layer2$teacher
-
-listExample[["學期"]] $`108-1`[[1]]$teacher #與752+~755同
-```
-
-###get2取出
-```{r}
-get2 <- listExample["學期"]
-get2_layer1 <- get2[[1]] # get2$`學期`,get2[["學期"]]
-get2_layer2 <- get2_layer1[["108-1"]]
-get2_layer3 <- get2_layer2[[1]]
-get2_layer3$teacher
-```
-
-```{r}
-listExample["學期"][[1]][['108-1']][[1]]$teacher
-listExample["學期"][["學期"]][['108-1']][[1]]$teacher
-```
-
-```{r}
-vector1 <- c(a=1, b=3, c=4)
-vector1[["a"]]
-vector1[c("a","c")]
-vector1$a  #會錯誤是正常的
-
-list1 <- list(a=1, b=3, c=4)
-list1[["a"]]
-list1[c("a","c")]
-list1$a
-```
-
-今明兩日台北市 新北市氣溫:
-```{r}
-today <- list(
-  list("台北市",c(highest_temp = 25),c(lowest_temp = 18)),
-  list("新北市",c(highest_temp = 24),c(lowest_temp = 15)))
-str(today)
-```
-
-```{r}
-today <- list(
-  list("台北市",
-       highest_temp=c(highest_temp = 25),
-       lowest_temp=c(lowest_temp = 18)),
-  list("新北市",
-       highest_temp=c(highest_temp = 24),
-       lowest_temp=c(lowest_temp = 15)))
-str(today)
-```
-
-```{r}
-today[[1]]$highest_temp  # $的使用時機:用list的時候
-```
-
-```{r}
-tomorrow <- list(
-  list("台北市",c(highest_temp = 25),c(lowest_temp = 18)),
-  list("新北市",c(highest_temp = 24),c(lowest_temp = 15)))
-
-weather <- list(today,tomorrow)
-
-print(weather)
-```
 
 
 
