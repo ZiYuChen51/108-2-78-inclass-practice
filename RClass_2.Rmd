@@ -488,6 +488,7 @@ pick_LawBusiness <-
   transcript100to103$`學院` %in%
   set_LawBusiness
 
+pick_LawBusiness
 ```
 
 
@@ -549,7 +550,7 @@ example$name[pick_na]
 ```
 
 
-## R還有一種特別的缺失資料NaN (即not a number)，出現在沒有定義的數學運算上，如：
+## R還有一種特別的缺失資料 NaN (即not a number)，出現在沒有定義的數學運算上，如：
 
 ```{r}
 0/0
@@ -576,6 +577,172 @@ pick_na <- is.na(list_victimAges_female$數目)
 total_na <- sum(pick_na)
 print(total_na)
 ```
+
+
+####4.4.5 字元偵測
+
+ * stringr::str_detect()
+
+***
+
+ ## example裡誰喜歡美食
+```{r}
+print(example[c("name","hobby")])
+
+# 補- 前面沒有使用 library(stringr) , 所以stringr::
+pick_loveFood <- stringr::str_detect(example$hobby,"美食")
+example$name[pick_loveFood]
+```
+
+ 常有同學會有以下"錯誤"寫法:
+```{r}
+# 補- == 前後要完全一樣,包含雙引號的位置也要一樣
+pick_loveFood <- example$hobby == "美食"
+pick_loveFood
+```
+
+ 
+ 新增一個假設的hobby2:
+ 
+ * == 字串內容一模一樣。
+ * str_detect 字串內容有關鍵字。
+```{r}
+example[["hobby2"]] <- c("美食", "時尚", "美食", "旅遊")
+
+print(example[c("name", "hobby2")])
+pick_loveFood2 <- example$hobby2 == "美食"
+example$name[pick_loveFood2]
+```
+ 
+
+ ##以下資料為新北市垃圾車路線
+```{r}
+jsonlite::fromJSON("https://data.ntpc.gov.tw/od/data/api/EDC3AD26-8AE7-4916-A00B-BC6048D19BF8?$format=json") ->
+  garbageRoutes
+```
+
+```{r}
+str(garbageRoutes)
+```
+
+
+```{r}
+#  1 用typeof()函數查詢電腦實質上如何看待garbageRoutes。
+typeof(garbageRoutes)  
+#  2 用class()函數查詢電腦把它能進行的操作運算歸屬於哪一類型。(class : 分類的部分)
+class(garbageRoutes)
+```
+
+ 由於garbageRoutes的本質是list，所以我們可以使用list所有操作手法，而class為data frame表示它有比典型list的運作多了些工具與變化（後面章節會提）。
+```{r}
+# 由linename元素判斷垃圾車有幾條路線。
+class(garbageRoutes$linename) #補- 得知原為character,但因為是重複性的資料,應屬於factor  ,所以就factor它,再存回自己
+factor(garbageRoutes$linename) -> garbageRoutes$linename
+levels(garbageRoutes$linename)
+  
+# 由linename創造： 可篩選出下午路線的「要/不要」向量pick_afternoonRoutes。
+pick_afternoonRoutes <-
+  stringr::str_detect(
+    garbageRoutes$linename, "下午"
+  )
+garbageRoutes$linename[pick_afternoonRoutes]
+```
+
+
+#### 4.4.5.1 閱讀函數說明
+
+```{r}
+# 補- ? :可以知道此函數在幹嘛,出現於右下方
+?str_detect
+```
+
+```{r}
+library(detect)
+```
+
+
+ * Title, Description, Usage, Arguments, Value, Examples
+
+ *1 : Title
+ Detect the presence or absence of a pattern in a string.
+ #偵測某一個字串是否有出現
+
+ *2 : Description
+ Vectorised over string and pattern. Equivalent to grepl(pattern, x). See str_which() for an equivalent to grep(pattern, x).
+ #細部說明在幹嘛
+
+ *3 : Usage (重要)
+```{r}
+stringr::str_detect(string, pattern, negate = FALSE) 
+   #補- negate = FALSE: default的意思,可以不用打出東西
+```
+ 
+ *4 :Arguments (重要)
+ string:
+input character vector. Either a character vector, or something coercible to one.
+#要放對東西的意思
+
+ pattern:
+Pattern to look for. The default interpretation is a regular expression, as described in stringi::stringi-search-regex. Control options with regex(). Match a fixed string (i.e. by comparing only bytes), using fixed(). This is fast, but approximate. Generally, for matching human text, you’ll want coll() which respects character matching rules for the specified locale. Match character, word, line and sentence boundaries with boundary(). An empty pattern, "“, is equivalent to boundary(”character").
+
+ negate:
+If TRUE, return non-matching elements.
+
+
+ *5 : Value
+ A logical vector.
+ #偵測的東西回傳之後會是什麼
+
+ *6 :Examples (重要)
+ #看不懂時,直接複製,然後執行看看
+```{r}
+fruit <- c("apple", "banana", "pear", "pinapple")
+stringr::str_detect(fruit, "a") #補-                        意義: fruit裡面是否有出現a
+#補- 字元規律描述regular expression
+stringr::str_detect(fruit, "^a") #補-                      意義: fruit裡面以a字元開頭
+stringr::str_detect(fruit, "a$") #補-                      意義: fruit裡面以a字元結束
+stringr::str_detect(fruit, "b")
+stringr::str_detect(fruit, "[aeiou]")
+
+# Also vectorised over pattern
+stringr::str_detect("aecfg", letters)
+
+# Returns TRUE if the pattern do NOT match
+stringr::str_detect(fruit, "^p", negate = TRUE)
+```
+ 
+ 補充*6: 
+ 由前面資料知 定義negate = FALSE
+```{r}
+stringr::str_detect(fruit, "a$")
+stringr::str_detect(fruit, "a$", negate = T)
+# 補- 相當於
+!stringr::str_detect(fruit, "a$")
+```
+ 
+ 
+***
+
+ **exercise 
+ 疾病管制署傳染病答問集
+```{r}
+CDC_chatbox <- readr::read_csv("http://od.cdc.gov.tw/pr/CDC_chatbox.csv")
+```
+
+找出問題中包含“肺炎”字眼的問題。
+```{r}
+#參考解答
+pick_pneumonia <- stringr::str_detect(CDC_chatbox$Question,"肺炎")
+CDC_chatbox$Question[pick_pneumonia]
+```
+
+
+
+
+
+
+
+
 
 
 
