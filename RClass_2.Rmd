@@ -909,21 +909,22 @@ str_detect(studentIds, "107|108")
 ## 字「元」組合[]: strip上的出象「均」是一個字「元」時用，如[af78]可以產生“a”,“f”,“7”,“8”四種字元出象。
   * 幾種常見的"字元模版"：[0-9](或[:digit:])，[a-z](或[:lower:])，[A-Z](或[:upper:]),[0-9a-zA-Z](或[:alnum:])
   #補- [0-9a-zA-Z] :表0-9 a-z A-Z
-  #37分!
+  
 ```{r}
 Ids <- c("A283743192","B829103720","A10920402","C291022384")
 
 str_view_all(Ids, "[AC]")
-str_detect(Ids, "[AC]") # 偵測 出現A、C
+stringr::str_detect(Ids, "[AC]") # 偵測 出現A、C
 
-str_extract(Ids,"[A-Z]") # 取出 A-Z的字元
+stringr::str_extract(Ids,"[A-Z]") # 取出每個字串元素 A-Z的字元
 ```
   
-## 將設定好的reel strips依你要的順序排好就是你的regex slot machine, 它可以用來驗證字串裡頭是否出現來自你regex slot machine的某些組合。
+ ## 將設定好的reel strips依你要的順序排好就是你的regex slot machine, 它可以用來驗證字串裡頭是否出現來自你regex slot machine的某些組合。
+
 ```{r}
-strip1 <- "[0-9]"
-strip2 <- "(櫻桃|777|紅心)" # 字群組合strip因為等下放中間所以用()括起來
-strip3 <- "[A-Z]"
+strip1 <- "[0-9]"  #補- 字元: [中括號]
+strip2 <- "(櫻桃|777|紅心)" # 字群組合strip因為等下放中間所以用()括起來 #補- 字組: (小括號)
+strip3 <- "[A-Z]"  #補- 字元: [中括號]
 myRegexSlotMachine <- paste0(strip1,strip2,strip3)
 print(myRegexSlotMachine)
 ```
@@ -938,14 +939,14 @@ str_view(
   pattern=myRegexSlotMachine
 )
 # 是否有吻合的出象
-str_detect(
+stringr::str_detect(
   c(claimA,claimB,claimC),
   pattern=myRegexSlotMachine
 )
 ```
 
 
-## 以否定法定義的字「元」組合[^ ]: “[^趙錢孫李]”不能有趙錢孫李任何一個
+## 以否定法定義的字「元」組合` [^ ] `: “[^趙錢孫李]”不能有趙錢孫李任何一個
 
 **範例
 
@@ -955,16 +956,16 @@ headline <- "資科系的謝陳官乃飛鳶書院三大名師，其中謝無雙�
 
 ```{r}
 # 顯示所有符合規則的
-str_view_all(headline, "謝陳官") # 固定字組
+str_view_all(headline, "謝陳官") # 固定字組  #補- 謝陳官會被mark起來
 str_count(headline,"謝陳官")
 
-str_view_all(headline, "[謝陳官]") # 有1個strip: 出象有3個可能字元 
+str_view_all(headline, "[謝陳官]") # 有1個strip: 出象有3個可能字元  #補- 一個字元會有一個結果 ex:"謝" "陳" "官" => 3個
 str_count(headline, "[謝陳官]")
 
 str_view_all(headline, "謝無雙|官求敗") # 有1個strip，出象有2個字組 
 str_count(headline, "謝無雙|官求敗")
 
-str_view_all(headline, "陳[^官]") # 固定字元＋有1個strip： 出象為排官的字元
+str_view_all(headline, "陳[^官]") # 固定字元＋有1個strip： 出象為排官的字元 #補- 陳後面的字不是官的 就可以
 str_count(headline, "陳[^官]")
 ```
 
@@ -979,11 +980,12 @@ addresses <- c(
 
  Ans:
 ```{r}
+#補- 
 strip1 <- strip2 <- strip3 <- "[0-9]"
 strip4 <- "號"
 myRegexSlotMachine <- paste0(strip1,strip2,strip3,strip4)
 print(myRegexSlotMachine)
-str_extract(addresses,myRegexSlotMachine)
+stringr::(addresses,myRegexSlotMachine)
 ```
  
 
