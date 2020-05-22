@@ -1256,14 +1256,12 @@ covid19$`縣市` <-
 covid19$`性別` <-
   factor(covid19$`性別`)
 covid19$`是否為境外移入` <-
-  factor(
-    covid19$`是否為境外移入`
-  )
+  factor(covid19$`是否為境外移入` )
 ```
 
 ```{r}
 # 可排序類別資料：年齡層
-covid19$年齡層 <-
+covid19$`年齡層` <-
   factor(           #補- 轉完1258行後 為ordered, factor class
     covid19$年齡層, #補- 1258行 character
     ordered=TRUE    #補-因為年齡層有順序
@@ -1285,6 +1283,7 @@ levels(covid19$年齡層)
  /////
  
  ####4.7.1 levels重新排列
+ 
   重新再定義factor一次
    # factor(目前的factor向量, levels=自訂排序)
 
@@ -1292,7 +1291,7 @@ levels(covid19$年齡層)
   ** levels放第二格時， levels= 可省略。
 
   ** 目前的類別向量的可不可排序性質依然會保留，不用特意去設      ordered=T/F
-      #使用函數時，若argument input  就是原help說明裡定義該argument位置時，「argument_name =」部份可以不寫。
+      #使用函數時，若argument input就是原help說明裡定義該argument位置時，「argument_name =」部份可以不寫。
 
  //
  
@@ -1305,7 +1304,7 @@ levels(covid19$`性別`)
   
 
 ```{r}
-levels(covid194``縣市)
+levels(covid19$`縣市`)
 covid19$`縣市` <- factor(covid19$`縣市` ,c("台北市","新北市",...))
 ```
 
@@ -1374,6 +1373,7 @@ levels(covid19$`縣市`)
 
 ```
  // 
+
 
   ## 年齡應該用年齡區間起始數字排序
 ```{r}
@@ -1638,13 +1638,258 @@ jsonlite::fromJSON("https://data.ntpc.gov.tw/od/data/api/EDC3AD26-8AE7-4916-A00B
   3- linename的“路線”字眼後面接的是營運時間，如“A11路線(一、四)下午”的linename, 它的營運時間為“(一、四)下午”。若沒寫時間的路線，它的營運時間為“全天”。請在garbageRoutes新增time元素，其元素值為對應linename所隱含的營運時間。（garbageRoutes$time為factor class, levels會有“(一、四)下午”, “下午”, “下午(1.4版)”, “晚上”, 及“全天”）
 
   4- 將garbageRoutes$time的levels中的“下午(1.4版)”改成“下午”。
+  
+!!!!!!!!!!!!!!!!! HW5 !!!!!!!!!!!!!!!!!!!!!!!!!
+
+ *******
+ 
+ #### 4.8 On list
+ 
+```{r}
+library(purrr)
+```
+ 
+ //
+ 
+ ##### 4.8.1 每個元素相同運算
+ 
+ 
+ ## 在之前的example物件 
+ 
+```{r}
+example <- list(
+  name=c("小明","小花","小新","美美"),
+  height=c(175,166,170,160),
+  weight=c(77,NA,60,43),
+  birthday=lubridate::ymd(c("1998-03-11","1999-12-22","1995-08-22","2001-10-10")),
+  hobby=c("美食 旅遊","旅遊 時尚","3C 美食","音樂 旅遊"),
+  residence=c("Taipei","New Taipei","Taichung","Kaohsiung"),
+  allowance=factor(c("0-1000","1001-2000","2000+","1001-2000")),
+  bloodType=c("A","B","B","O")
+)
+```
+
+ ##我們有可能想要拿出其中屬於小新的資料：
+ 
+```{r}
+pick_小新 <- example$name == "小新"
+data_selected <- 
+  list(
+    name=example$name[pick_小新],
+    weight=example$weight[pick_小新],
+    height=example$height[pick_小新],
+    hobby=example$hobby[pick_小新],
+    residence=example$residence[pick_小新],
+    allowance=example$allowance[pick_小新],
+    bloodType=example$bloodType[pick_小新]
+  )
+```
+ 
+```{r}
+names(example)
+```
 
 
+ ## data_selected的產生，相當於進行
+
+```{r}
+example[[1]][pick_小新], ## [[兩個中括號]] :拿出來
+example[[2]][pick_小新],
+example[[3]][pick_小新],
+example[[4]][pick_小新],
+example[[5]][pick_小新],
+example[[6]][pick_小新],
+example[[7]][pick_小新]
+```
+
+  ### 再存放在list()裡。也就是我們想要：
+
+  ** 對example底下的每個元素進行
+
+  ** [pick_小新]的動作
+
+  ### purrr底下的map()允許我們
+
+  ** 使用 .x 來代表每個元素，即[[1]], [[2]], ..., [[7]]
+        補: .x 表示:對每個元素的意思
+    
+  所以
+
+  ** 對每個元素進行[pick_小新]
+
+  ** 可以寫成 .x[pick_小新]。
+  
+  ### 由於 .x[pick_小新]
+  是個公式化的動作，在R，~代表要形成一個公式(formula)，所以
+
+  **  要寫成   ~ .x[pick_小新]
+  
+
+  ***完整的map()用法為：
+
+                  map(對象物件, ~對每個元素作的動作)
+
+  #補: map() :對同一個物件,要重覆進行一樣的動作時使用
 
 
+ //
+
+ ## 以一開始的例子為例：
+
+      ** 對 example 底下的每個元素進行
+
+      ** .x[pick_小新] 的動作
+
+```{r}
+map(example, ~.x[pick_小新]) -> 
+  data_selected 
+  
+data_selected
+```
+
+//
+
+ ## 範例：舞蹈表演
+   舞蹈表演資訊
+```{r}
+jsonlite::fromJSON("https://www.dropbox.com/s/6252gbdnv9owljm/dance.json?dl=1", simplifyDataFrame = F) -> dance
+```
+   
+```{r}
+str(dance)  ##點Global Environment較方便
+```
+   
+   
+```{r}
+# 第一個dance表演名稱
+dance[[1]]$title
+# 第二個dance表演名稱
+dance[[2]]$title
+```
+
+  ## 若想得到所有表演的名稱，我們得：
+
+    ** 對 dance 每一個元素(.x表示)進行
+
+    **.x$title的動作
+    
+```{r}
+map(dance, ~.x$title) ->
+  list_titles
+
+View(list_titles)
+```
+
+  
+  ## 每個表演有時不止演出一場，每個表演的場次總數：
+```{r}
+# 記載第一個表演的所有場次訊息
+dance[[1]]$showInfo
+str(dance[[1]]$showInfo)
+
+# 計算第一個表演有幾個場次
+length(dance[[1]]$showInfo)
+
+# 計算第二個表演有幾個場次
+length(dance[[2]]$showInfo)
+```
+
+    ** 對 dance 每個元素進行
+
+    ** length(.x$showInfo)的動作
+    
+```{r}
+map(dance,~length(.x$showInfo)) ->
+  list_numberOfShows 
+  
+View(list_numberOfShows)
+```
+
+  ## 第4個表演有6個場次，想知道它們的日期時間：
+```{r}
+str(dance[[4]]$showInfo)  ##得到6個List of eight
+```
+
+```{r}
+# 這個表演第1個場次的訊息
+dance[[4]]$showInfo[[1]]$time
+# 這個表演第2個場次的訊息
+dance[[4]]$showInfo[[2]]$time
+```
+
+    ** 對 dance[[4]]$showInfo 的每個元素(.x)表示
+
+    ** 進行 .x$time 動作  
+
+```{r}
+map(dance[[4]]$showInfo, ~ .x$time) ->
+  
+list_showTimes_dance4  ##一直變的就是 .x
+
+view(list_showTimes_dance4)
+```
+
+//
+```{r}
+chr <- c("abaa", "accd")
+library(stringr)
+str_extract_all(chr[[1]], "[ad]")
+str_extract_all(chr[[2]], "[ad]")
+```
+
+```{r}
+map(chr, ~ str_extract_all(.x , "[ad]"))
+```
 
 
+  ## Practice!!
+  找出第8個表演的所有場次時間(time)和地點(location):
+```{r}
+
+```
+
+*****
+
+  #### 4.8.2 綜合練習
+
+ ## 1.
+ 新北市公車路線清單
+```{r}
+jsonlite::fromJSON("https://data.ntpc.gov.tw/api/datasets/0EE4E6BF-CEE6-4EC8-8FE1-71F544015127/json/preview", simplifyDataFrame = F) -> busRoutes
+```
+  
+    Q: 請抓出每條路線的Id(路線代碼)、providerId(業者代碼)、providerName(業者中文名稱)、nameZh(中文名稱)。
+```{r}
+
+```
+
+  
+  ## 2.
+一般天氣預報-今明36小時天氣預報:
+
+  **欄位說明： https://opendata.cwb.gov.tw/opendatadoc/MFC/ForecastElement.pdf
+```{r}
+jsonlite::fromJSON("https://opendata.cwb.gov.tw/fileapi/v1/opendataapi/F-C0032-001?Authorization=rdec-key-123-45678-011121314&format=JSON") ->
+  weather_next36hours
+```
+  
+    Q 2.1 找出有氣象預報資訊的縣市名稱（locationName欄位）
+```{r}
+
+```
 
 
+    Q 2.2 氣象局針對每個縣市提供了不同氣象因子在未來三個時段的預報。每個都市的氣象因子預報有那些，以第一個都市為例，它存在
+```{r}
+weather_next36hours$cwbopendata$dataset$location$weatherElement[[1]]$elementName 
+```
 
+    請取出每個縣市有提供的氣象預報因子名稱。（個別名稱的意思要去看欄位說明文件）
+```{r}
 
+```
+
+    Q 2.3 請抓出每縣市在第一個預告時段的
+
+*預告開始時間  *預告結束時間 *這段時間的最高氣溫
+  
