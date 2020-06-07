@@ -185,7 +185,7 @@ glue::glue("{locationInput} {dateInput} 氣溫，最高{maxT}度，最低{minT}�
  
   ## 打造Silly天氣預報機器人：
 ```{r}
-askSilly_weather <- function(locationInput,dateInput){
+askSilly_weather <- function(locationInput){
   jsonlite::fromJSON("https://opendata.cwb.gov.tw/fileapi/v1/opendataapi/F-C0032-001?Authorization=rdec-key-123-45678-011121314&format=JSON") ->
   weather_next36hours
   
@@ -216,6 +216,247 @@ askSilly_weather("花蓮縣") #today())
 what_time_it_is("Europe/Paris")
 ```
 它會依照你電腦目前時間, 即輸入now()得到的時間，去告訴你現在巴黎幾點。
+
+
+/////
+
+  #### 5.2.3 函數的組成
+  
+  
+```{r}
+class(demand_return)
+```
+
+```{r}
+# 查詢函數formals arguments要求
+formals(askSilly_weather)
+```
+
+
+  ## Details
+```{r}
+# 查詢函數主體
+body(askSilly_weather)
+```
+
+```{r}
+## $locationInput
+## 
+## 
+## $dateInput
+```
+
+  ## Details
+```{r}
+## {
+##     weather_next36hours <- jsonlite::fromJSON("https://opendata.cwb.gov.tw/fileapi/v1/opendataapi/F-C0032-001?Authorization=rdec-key-123-45678-011121314&format=JSON")
+##     pick_location <- (weather_next36hours$cwbopendata$dataset$location$locationName == 
+##         locationInput)
+##     weatherAtLocation <- weather_next36hours$cwbopendata$dataset$location$weatherElement[pick_location][[1]]
+##     pick_MaxT <- (weatherAtLocation$elementName == "MaxT")
+##     pick_MinT <- (weatherAtLocation$elementName == "MinT")
+##     maxT <- weatherAtLocation$time[pick_MaxT][[1]]$parameter$parameterName[[1]]
+##     minT <- weatherAtLocation$time[pick_MinT][[1]]$parameter$parameterName[[1]]
+##     glue::glue("{locationInput} {dateInput} 氣溫，最高{maxT}度，最低{minT}度。")
+## }
+```
+  
+ ///
+ 
+  ## 函數可以存在list裡
+  
+```{r}
+learning_topics <- 
+  list(
+    subject="函數",
+    date=lubridate::ymd("2020-06-03"),
+    functionsCreated=list(
+      demand=demand_return # 等號右邊是呼叫demand_return的定義值，也就是function(...){...}值定義本身。
+    )
+  )
+```
+  
+```{r}
+learning_topics$functionsCreated$demand(1.2)
+```
+ 
+  !!! 其實幾乎所有的物件不管什麼class都可以存在list裡，很威吧！!!
+  
+  /////
+  
+  
+    #### 5.2.4 Environment
+    
+```{r}
+demand_return <- 
+  function(p){
+    q_d <- 10-5*p
+    return(q_d)
+  }
+# 印在螢幕，但Global Environment並不會有q_d
+demand_return(1.2)
+class(demand_return)
+```
+    
+    
+```{r}
+typeof(demand_return)
+```
+    
+
+  ## Details
+  
+```{r}
+## [1] "closure"
+```
+  
+  function本身的運作並不能只靠它的定義值function(...){...}，還要有適當的環境（environment）條件才能生存。若物件的生存運作需要有適當的環境，表示電腦要存這個物件時還需要包含（enclose）它的（生存）環境一起存。
+     這種儲存型態叫closure（閉包）。
+  
+  
+```{r}
+# 查詢函數執行所要求環境
+environment(demand_return)  ## 得知:依global environment生存 
+```
+
+ //  
+ 
+  ## Details
+  
+```{r}
+## <environment: R_GlobalEnv>
+```
+  
+  
+```{r}
+# 若函數執行需要Global environment已存在某些物件，查詢需要哪些物件
+codetools::findGlobals(demand_return)  ## 可檢查demand_return需要哪些global environment才能存活
+```
+  
+ //
+ 
+ ## Details
+ 
+```{r}
+## [1] "-"      "{"      "*"      "<-"     "return"
+```
+ 
+ 
+```{r}
+intercept <- 10
+slope <- -5
+myDemand <- function(p){
+  q_d <- intercept + slope*p
+  return(q_d)
+}
+```
+ 
+```{r}
+environment(demand_return)
+environment(myDemand)
+```
+ 
+```{r}
+codetools::findGlobals(demand_return)
+codetools::findGlobals(myDemand) 
+
+# myDemand對Global environment的要求多了intercept及slope
+```
+ 
+```{r}
+myDemand(1.2) ## 可以執行
+```
+ 
+ 
+```{r}
+# 移除global environment裡的intercept及slope
+rm(intercept, slope)
+```
+
+```{r}
+demand_return(1.2) # 維持正常運作
+```
+
+```{r}
+myDemand(1.2) # 無法運作
+```
+
+  # myDemand的運作需要global environment裡的intercept, slope物件。這表示
+
+    ** 沒有intercept, slope在global environment裡它無法運作。
+
+    ** global environment裡的intercept, slope值若有改變，它的運作結果也會不同。(這種「要運作才去呼叫值」的特性叫Lazy evaluation，惰性求值)
+
+```{r}
+intercept <- 10  ##再把剛剛移除的存回來, myDemand(1.2)就可以運作了
+slope <- -5
+myDemand(1.2) # 10-5*P
+```
+
+```{r}
+slope <- -1
+myDemand(1.2) # 10-1*P
+```
+
+```{r}
+intercept <- 5
+slope <- -1.2
+myDemand(1.2) # 5-1.2*P
+```
+
+ /////
+ 
+   #### 5.2.5 預設值
+  
+  函數lazy evaluation的特性，讓函數的運作：
+
+    ** 具有隨時可改變運作狀態的彈性； 但
+
+    **  該工具若落在電腦知識不足的使用者手上會有誤動global environment而產生運作錯誤的危機。
+
+//
+
+```{r}
+myDemand2 <- function(p, intercept=10, slope=-5){
+  q_d <- intercept + slope*p
+  return(q_d)
+}
+```
+
+```{r}
+environment(myDemand2)
+findGlobals(myDemand2) # 不依靠global env裡的intercept/slope
+```
+
+```{r}
+myDemand2(1.2)  ## intercept=10 slope=-5
+myDemand2(1.2, slope=-1)  ## intercept=10 slope=-1
+myDemand2(1.2, intercept=5, slope=-1.2)  ##intercept=5 slope=-1.2
+```
+
+    !!! 預設值是「平常不需要動到的彈性arguments」，習慣上定義時最好放在arguments的最後面。 !!!
+
+ /////
+
+    #### 5.2.6 綜合練習
+
+ ## 請由以下三個資料集：
+
+```{r}
+jsonlite::fromJSON("https://data.ntpc.gov.tw/api/datasets/07F7CCB3-ED00-43C4-966D-08E9DAB24E95/json/preview") -> busArrivalForecast # 公車預估到站時間 https://data.ntpc.gov.tw/datasets/07F7CCB3-ED00-43C4-966D-08E9DAB24E95
+
+jsonlite::fromJSON("https://data.ntpc.gov.tw/api/datasets/0EE4E6BF-CEE6-4EC8-8FE1-71F544015127/json/preview") -> busRoutes # 公車路線清單 https://data.ntpc.gov.tw/datasets/0EE4E6BF-CEE6-4EC8-8FE1-71F544015127
+
+jsonlite::fromJSON("https://data.ntpc.gov.tw/api/datasets/34B402A8-53D9-483D-9406-24A682C2D6DC/json/preview") -> busStopsInfo # 公車站位資訊 https://data.ntpc.gov.tw/datasets/34B402A8-53D9-483D-9406-24A682C2D6DC
+```
+
+  打造公車到站預報機器人when_busArrives：
+```{r}
+when_busArrives("916","臺北大學正門")
+```
+  
+
+
 
 
 
