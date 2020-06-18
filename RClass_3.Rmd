@@ -1462,14 +1462,14 @@ Sys.setenv("_R_CHECK_LENGTH_1_CONDITION_" = "true")
 myAnswer <- c(2,3,6)
 correctAnswer <- c(2,3,5)
 
-if(all(myAnswer == correctAnswer)){ # 要全TRUE
+if(all(myAnswer == correctAnswer)){ # 用all包起來: 要全TRUE
   print("你答對了")
 }
 ```
    
    
 ```{r}
-if(any(myAnswer == correctAnswer)){ # 只要有一個TRUE
+if(any(myAnswer == correctAnswer)){ # any: 只要有一個TRUE
   print("裡頭有數字是對的")
 }
 ```
@@ -1495,8 +1495,8 @@ myAnswer <- c(1,2,3)
 correctAnswer <- factor(c(1,2,3))
 
 if(is.factor(myAnswer) && all(myAnswer==correctAnswer)){
-  print("答對了")
-  10
+  print("答對了")   ## && : 先算前面，如果前面為T，才算後面 (較有效率)
+  10                ## is.factor: 判斷是不是factor 得到T或F
 } else {
   print("答錯了")
   0
@@ -1506,8 +1506,8 @@ myGrade
    
 ```{r}
 if(is.factor(myAnswer) & all(myAnswer==correctAnswer)){
-  print("答對了")
-  10
+  print("答對了")    ## & :前後同時算，再判斷是否皆正確(較耗時)
+  10 
 } else {
   print("答錯了")
   0
@@ -1544,13 +1544,13 @@ myAge <- 40
 myChildrenNumber <- 5
 
 if(myAge >=65 | myChildrenNumber >3){
-  "符合申請資格"
+  "符合申請資格"    ## | : 兩個都算
 } else {
   warning("不符合申請資格")
 }
 
 if(myAge >=65 ||  myChildrenNumber >3){
-  "符合申請資格"
+  "符合申請資格"     ## || : 如果前者為T，就不會再繼續算後者
 } else {
   warning("不符合申請資格")
 }
@@ -1579,8 +1579,8 @@ ifelse(x %% 2==0, "even", "odd")
 ```{r}
 y <- sample(40:100,20, replace=T)
 dplyr::case_when(
-  y < 60 ~ "F",
-  60<=y & y < 70 ~"D",
+  y < 60 ~ "F",       ## LHS ~ RHS :左邊的情境若吻合的話，就會產生右邊
+  60<=y & y < 70 ~"D",   
   71<=y & y < 80 ~"C",
   80<=y & y < 90 ~"B",
   90<=y ~ "A"
