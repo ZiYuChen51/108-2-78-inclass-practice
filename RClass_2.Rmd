@@ -26,7 +26,7 @@ plot(pressure)
 ```
 
 Note that the `echo = FALSE` parameter was added to the code chunk to prevent printing of the R code that generated the plot.
-
+/////////////////////////////////////////////////////////////////////
 
 ####4.3 On numeric class
 
@@ -70,7 +70,7 @@ sequenceNums %% 2 # 餘數為1則是奇數，0則是偶數
 
 ***
 
-##在多數時候R向量間的運算都是elementwise(個別元素)的運算：
+  ## 在多數時候R向量間的運算都是elementwise(個別元素)的運算：
 
   所有向量一一取出各自對應相同位置的元素值進行運算。
 
@@ -82,7 +82,8 @@ c(2**4, 3**(-1), 5**3)
 ```
 
 
-##當向量間不等長度時，R則對短的向量進行Recycle的動作（即Python的Broadcast）:
+##當向量間不等長度時，R則對短的向量進行Recycle的動作
+（即Python的Broadcast）:
 
   將其中較短的向量反複堆疊到可以長得跟最長的向量一樣長度。
  (當運算的兩物件內容長度不同時，則將其中較短的一個**反複堆疊到可以長得跟另一個一樣高**時才來運算，稱為recycling。)
@@ -112,12 +113,10 @@ c(2,3,2)/c(-2,-13,10)
 ```
 
 
-##Recycling不只用在數值class, 只要向量間的處理要等長度才合理時，recycling通常也會用在其他的class。
+ ## Recycling不只用在數值class,    只要向量間的處理要等長度才合理時，recycling通常也會用在其他的class。
 
 ```{r}
-paste0(
-  c("我叫"), c("小明","小美")
-)
+paste0( c("我叫"), c("小明","小美") )
 ```
 
 也等於是
@@ -136,7 +135,7 @@ paste0(
 ```
 
 
-####4.4 Relational Operators
+#### 4.4 Relational Operators 情境判斷/關聯判斷
 
 這節在介紹產生「要/不要」向量的常見手法。
 (補:操作出來皆為要不要向量)
@@ -155,16 +154,16 @@ example <- list(
 ```
 
 
-####4.4.1 比較
->,<,<=,>=: 分別為大於、小於、小於等於、大於等於
+#### 4.4.1 比較
+  > , < , <= , >= : 分別為大於、小於、小於等於、大於等於
 
-** 數字比較
+ ** 數字比較
+ 
+ ** 時間比較
 
-** 時間比較
+ ** 可排序類別資料比較
 
-** 可排序類別資料比較
-
-***
+ /// 
 
 
  ## 數字比較
@@ -179,8 +178,8 @@ example$name[c(T, F, T, F)]
 
 ```{r}
 str(example[c("name","height")])
-
 pick_above170 <- example$height >= 170
+
 #補:相當於
 example$height
 c(175, 166, 170, 160) >= 170
@@ -269,7 +268,7 @@ str(exchangeRate_after98)
 
 
 ***
-##可排序類別資料比較:
+## 可排序類別資料比較:
 
 #      example裡誰零用錢大於1000:
 ```{r}
@@ -570,7 +569,7 @@ print(total_na)
 ```
 
 
-####4.4.5 字元偵測
+####  4.4.5 字元偵測
 
  * stringr::str_detect()
 
@@ -688,6 +687,9 @@ If TRUE, return non-matching elements.
 
  *6 :Examples (重要)
  #看不懂時,直接複製,然後執行看看
+ 
+ //
+ 
 ```{r}
 fruit <- c("apple", "banana", "pear", "pinapple")
 stringr::str_detect(fruit, "a") #補-                        意義: fruit裡面是否有出現a
@@ -771,9 +773,7 @@ example$name[ pick_after98 | !pick_fromTaipeiMetro ]
 
 ## 誰1998以後（含）出生且住大台北且血型B型
 ```{r}
-example$name[
-  pick_after98 & pick_fromTaipeiMetro & pick_bloodB
-]
+example$name[ pick_after98 & pick_fromTaipeiMetro & pick_bloodB ]
 ```
 
  ** 以上邏輯向量間的運算結果還是邏輯向量——依然是「要/不要」向量，所以還是可以用來取出元素。但有時我們要做的運算是希望得到一個T/F元素值，而非一串元素值，如：
@@ -807,7 +807,7 @@ str_sub(c("410873115","410768115"),5,6)
 
  * 地址幾號: “大學號151號”，只知道號碼在「號」這字前面，但它會是第幾個位元不知道。
  
- **使用Regular Expression (regex, 正規表示式)
+ ** 使用Regular Expression (regex, 正規表示式)
 
 
 ## 如何讀入“民國108年12月5日”、“民國98年10月5日”?
@@ -1021,11 +1021,13 @@ str_view_all(addresses,myRegexSlotMachine)
 stringr::str_extract(addresses,myRegexSlotMachine)
 
 str_view_all(addresses,"[0-9]+") # 樓號也會選到
+stringr::str_extract(addresses,"[0-9]+")
 ```
 
 
 *****
- 了解如何regex形式的描述你的target後，接下來我們進一步學習如何更準確描述target在整個字串的位置。
+ 了解如何regex形式的描述你的target後，接下來我們進一步學習如何更準確描述
+ target在整個字串的位置。
 
 
   #### 4.6.4 頭尾定位 Anchors:
@@ -1068,12 +1070,12 @@ str_view(phrase, pattern)
   
   target後面是B：target_regex(?=B_regex)： target_pattern後面是年
 
-  ** target前面是A：(?<=A_regex)target_regex：
-  target_pattern前面是民國
+    ** target前面是A：(?<=A_regex)target_regex：
+             target_pattern前面是民國
 
-  ** target前有A後有B：(?<=A_regex)target_regex(?=B_regex)
+    ** target前有A後有B：(?<=A_regex)target_regex(?=B_regex)
 
-  ** Cheat sheet上還有更多字串處理情境。
+    ** Cheat sheet上還有更多字串處理情境。
 
  //
  
@@ -1091,9 +1093,7 @@ target_regex <- "[0-9]+" #補- 或是[0-9]{2,3}
 A_regex <- "民國"
 B_regex <- "年"
 
-regex_pattern <- glue::glue(
-  "(?<={A_regex}){target_regex}(?={B_regex})"
-  )
+regex_pattern <- glue::glue( "(?<={A_regex}){target_regex}(?={B_regex})" )
 
 print(regex_pattern)
 
@@ -1141,6 +1141,8 @@ Ans:
 ```{r}
 str_extract(addresses,"[0-9]+(?=號)")
 ```
+## NOTE: 鄰居方法不會取到字 ex: [0-9](?=號) ; 
+         複製次數方法可以取字 ex: "[0-9]+號"
 
 *****
 
@@ -1153,7 +1155,7 @@ str_extract(addresses,"[0-9]+(?=號)")
 //
 
 ```{r}
-str_extract_all(
+str_extract_all( 
   "我的名字8293叫17380小abce明", "[\u4E00-\u9FFF]+")
 ```
 
@@ -1228,7 +1230,8 @@ levels(factor2)
 
 sort(                 #補- sort: 排序
   str_sub(char2,1,1)  #補- char2裡第1位到第1位 (蔡)
-)
+)                     #補- str_sub()函数：从字符串向量中截取、替換子字符串。
+                      ## 用法: str_sub(string, start = , end = )
 sort(
   str_sub(char2,2,2)
 )
@@ -1287,11 +1290,12 @@ levels(covid19$年齡層)
   重新再定義factor一次
    # factor(目前的factor向量, levels=自訂排序)
 
+  
+    ** levels放第二格時， levels= 可省略。
 
-  ** levels放第二格時， levels= 可省略。
-
-  ** 目前的類別向量的可不可排序性質依然會保留，不用特意去設      ordered=T/F
-      #使用函數時，若argument input就是原help說明裡定義該argument位置時，「argument_name =」部份可以不寫。
+    ** 目前的類別向量的可不可排序性質依然會保留，不用特意去設      ordered=T/F
+      
+  #使用函數時，若argument input就是原help說明裡定義該argument位置時，「argument_name =」部份可以不寫。
 
  //
  
@@ -1305,7 +1309,7 @@ levels(covid19$`性別`)
 
 ```{r}
 levels(covid19$`縣市`)
-covid19$`縣市` <- factor(covid19$`縣市` ,c("台北市","新北市",...))
+      covid19$`縣市` <- factor(covid19$`縣市` ,c("台北市","新北市",...))
 ```
 
 
@@ -1323,6 +1327,7 @@ unlist(population) -> population  #補- 把population(list) 變成不是list (fa
 ```
 
 
+
   資料科學心法一：拿到新的資料先檢視「內容」、「class/type」
 ```{r}
 print(population)
@@ -1330,6 +1335,7 @@ class(population) # 判斷出是named integer vector
 names(population) # 元素名稱是台灣各縣市
 
 population[["新北市"]] #補- 取出人口數
+population["新北市"]
 ```
 
   2.留下levels中有的popluation元素
