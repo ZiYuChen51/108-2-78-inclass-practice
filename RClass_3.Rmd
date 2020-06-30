@@ -2052,9 +2052,381 @@ for(.x in 1:10){
 ```
    
   ///////// 
+  
+  
+  #### 累計型output
+
+   Summation
+   
+```{r}
+a <- sample(1:100, 10, replace=T)
+print(a)
+```
+   
+   ** Sequence: 1:10
+
+   ** body: 到目前sequence .x前已經加總的值+ a[[.x]]
+
+   ** output: .x到10最後算完的值。
+
+```{r}
+sum <- 0
+1 %>% {sum <- sum + a[[.]]}  ## 反覆出現的 用大括號框 ## 數字提出來 變成.
+2 %>% {sum <- sum + a[[.]]}
+3 %>% {sum <- sum + a[[.]]}
+
+
+10 %>% {sum <- sum + a[[.]]}
+```
+
+   
+```{r}
+sum <- 0
+for(.x in 1:10){sum <- sum+a[[.x]]}
+
+print(sum)
+```
    
    
+   ////////
    
+    #### 長度不定型output
+  
+  每次抽一個介於0到100的數字（抽出放回）抽10次，但每次必需是3的倍數才留下來。
+  
+```{r}
+output <- c()
+
+1 %>% {#.x=1
+new <- sample(0:100,1)
+if(new %% 3==0){
+  output <- c(output, new)
+}}
+2 %>% {# .x=2
+new <- sample(0:100,1)
+if(new%% 3==0){
+  output <- c(output,new)
+}}
+3 %>% {# .x=3
+new <- sample(0:100,1)
+if(new %% 3==0){
+  output <- c(output, new)
+}}
+
+```
+  
+```{r}
+output <- c()
+for(.x in 1:10){
+  new <- sample(0:100,1)
+  if(new %% 3==0){
+    output <- c(output, new)
+  }
+}
+
+print(output)
+```
+  
+  ///////////
+  
+    #### next
+
+  有時.x對應元素要附合某些條件才要進行body裡某些處理，不然可「跳過」。
+  
+```{r}
+list(
+  list("student A", c(2,3,4,5)),
+  list("student B", NA), # 沒交作業
+  list("student C", factor(c(2,3,4,5))),
+  list("student D", factor(c(2,3,5)))
+) -> collectionHWs
+
+correctAns <- factor(c(2,3,4,5))
+
+output <- vector("integer",length(collectionHWs))
+nameVector <- vector("character", length(collectionHWs))
+```
+
+```{r}
+1 %>% {#第1個學生
+nameVector[[.]] <-
+collectionHWs[[.]][[1]]
+studentAns <- collectionHWs[[.]][[2]]
+# 改題部份
+if(identical(studentAns, correctAns)){   ## identical:內容物件一樣
+    output[[.]] <- 10
+  } else if
+  (class(studentAns)!=class(correctAns) && identical(as.character(studentAns),as.character(correctAns))) {
+    output[[.]] <- 5  ## 只有class不同，得5分
+  } else {
+    output[[.]] <- 0
+  }}
+
+2 %>% {# 第2個學生
+nameVector[[.]] <-
+collectionHWs[[.]][[1]]
+studentAns <- collectionHWs[[.]][[2]]
+# 改題部份
+if(identical(studentAns, correctAns)){   ## identical:內容物件一樣
+    output[[.]] <- 10
+  } else if
+  (class(studentAns)!=class(correctAns) && identical(as.character(studentAns),as.character(correctAns))) {
+    output[[.]] <- 5  ## 只有class不同，得5分
+  } else {
+    output[[.]] <- 0
+  }}
+#第三個學生
+#第四個學生
+```
+
+```{r}
+for(.x in 1:4){# 第4個學生
+nameVector[[.x]] <- collectionHWs[[.x]][[1]]
+studentAns <- collectionHWs[[.x]][[2]]
+
+if(is.na(studentAns)){
+  output[[.x]] <- 0
+  next
+}                 ## Next: 沒交作業直接0分，不用改了
+
+if(identical(studentAns, correctAns)){
+    output[[.x]] <- 10
+  } else if 
+(class(studentAns)!=class(correctAns) && identical(as.character(studentAns),as.character(correctAns))) {
+    output[[.x]] <- 5
+  } else {
+    output[[.x]] <- 0
+  }} 
+```
+
+```{r}
+seq_along(collectionHWs)
+```
+
+
+```{r}
+for(.x in seq_along(collectionHWs)){
+  nameVector[[.x]] <- collectionHWs[[.x]][[1]]
+  studentAns <- collectionHWs[[.x]][[2]] 
+  if(is.na(studentAns)){
+    output[[.x]] <- 0
+    next
+  } 
+  
+  # 改題部份
+  if(identical(studentAns, correctAns)){
+    output[[.x]] <- 10
+  } else if (class(studentAns)!=class(correctAns) && identical(as.character(studentAns),as.character(correctAns))) {
+    output[[.x]] <- 5
+  } else {
+    output[[.x]] <- 0
+  }
+}
+names(output) <- nameVector
+
+print(output)
+```
+  
+     //
+    ## Practice
+  
+  將body的改題部份另外寫成grade(studentAns, correctAns)函數，讓它改完後回傳分數值，並重寫上面迴圈使用你的grade函數。
+```{r}
+
+```
+  
+  //////////////
+  
+    #### 5.4.4 while loop
+
+  有時我們面臨sequence長度未知，如擲一銅板直到出現5次正面才停。
+  
+```{r}
+sum <- 0  # 得到幾個正面
+count <- 0 # 計擲了幾次
+# 1st toss
+1 %% {count <- count +1 # 計數器加1
+newToss <- sample(c("正","反"), 1, replace=T)
+if(newToss == "正"){
+    sum <- sum+1
+}}
+
+# 2nd toss
+2 %>% {count <- count +1 # 計數器加1
+newToss <- sample(c("正","反"), 1, replace=T)
+if(newToss == "正"){
+    sum <- sum+1
+}}
+
+# 3rd toss
+3 %>% {count <- count +1 # 計數器加1
+newToss <- sample(c("正","反"), 1, replace=T)
+if(newToss == "正"){
+    sum <- sum+1
+}}
+## 一直擲下去，直到出現正面
+```
+  
+```{r}
+sum <- 0  # 得到幾個正面
+count <- 0 # 計擲了幾次
+for(.x in 1:100){
+  count <- count +1 # 計數器加1
+newToss <- sample(c("正","反"), 1, replace=T)
+if(newToss == "正")
+  sum <- sum+1 
+  }
+  if(sum==5){
+    break
+}}
+```
+
+while = (approximate) for + break
+```{r}
+sum <- 0  # 得到幾個正面
+count <- 0 # 計擲了幾次
+max+count <- 500 #計步的上限(避免犯錯，出不了迴圈)
+while(sum !=5 && count <= max_count){  #留在迴圈的條件 (不是5，就持續) non-break條件
+  count <- count +1 # 計數器加1
+newToss <- sample(c("正","反"), 1, replace=T)
+if(newToss == "正"){
+  sum <- sum+1 
+  }
+}
+```
+
+  
+  ## for loop用很長的sequence再加上條件式break：
+```{r}
+sum <- 0
+for(i in 1:100){
+  newToss <- sample(c("正","反"), 1, replace=T)
+  if(newToss == "正"){
+    sum <- sum+1
+  }
+  print(glue::glue("已擲{i}次得到{sum}次正面"))
+  if(sum==5){
+    break
+  }
+}
+```
+  
+   * break會完全終止迴圈，而之前學到的next是不執行其以下的body直接跳下一個sequence值。
+
+   * while會一直反覆執行body直到 conditionCondition 為FALSE:
+
+```{r}
+while(continueCondition){
+  body
+}      ## 留在迴圈的條件
+```
+
+```{r}
+sum <- 0
+count <- 0 # 計數器
+while(sum<5){
+  count <- count+1 # 計數器+1
+  newToss <- sample(c("正","反"), 1, replace=T)
+  if(newToss == "正"){
+    sum <- sum+1
+  }
+  print(glue::glue("已擲{count}次得到{sum}次正面"))
+}
+```
+
+  ## 由於while並沒有迴圈執行次數上限，若沒設好結束條件程式會一直跑下去鎖死電腦。為避免此問題，一般我們會放計數器，並在條件裡放計數上限，如下方四個#註明位置 :
+  
+```{r}
+count <- 0 # 計數器開始值
+max_count <- 500 # 計數上限
+while(continueCondition && count <= max_count){ # 增加計數上限條件
+  count <- count+1 # 計數器加1
+  body
+}
+```
+  
+   ///
    
+   ## 之前的（有限）迴圈也可以用while寫：
+```{r}
+set.seed(1000) # 控制sample抽出的數字sequence固定，通常進行方法比對用
+
+output <- c()
+for(.x in 1:10){
+  new <- sample(0:100,1)
+  if(new %% 3==0){
+    output <- c(output, new)
+  }
+}
+
+print(output)
+```
+   
+```{r}
+set.seed(1000) # 控制sample抽出的數字sequence固定，通常進行方法比對用
+
+count <- 0 # 計數器起始值
+output <- c()
+while(count <= 10){ # 計數上限條件
+  count <- count+1 # 計數器+1
+  new <- sample(0:100,1)
+  if(new %% 3==0){
+    output <- c(output, new)
+  }
+}
+
+print(output)
+```
+  
+```{r}
+a <- sample(1:100, 10, replace=T)
+print(a)
+
+sum <- 0
+for(.x in 1:10){ 
+  sum <- sum+a[[.x]]
+}
+
+print(sum)
+```
+  
+```{r}
+count <- 0 # 計數器起始值
+sum <- 0
+while(count <= 10){ # 計數上限條件
+  count <- count+1 # 計數器+1
+  sum <- sum+a[[count]]
+}
+
+print(sum)
+```
+  
+  * 幾乎每一個iteration都可以用functional, for, while寫一次，
+  不過若沒有追求時間效率的需求，還是以符合直覺的寫法優先，日後維護也比較能進入狀況。
+
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
    
    
