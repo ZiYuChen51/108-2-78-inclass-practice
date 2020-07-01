@@ -31,7 +31,7 @@ Note that the `echo = FALSE` parameter was added to the code chunk to prevent pr
 /////
 
 
-  #### 5.2 Function
+     #### 5.2 Function
 
 用來執行一連串有固定SOP（流程）的動作
 
@@ -43,7 +43,7 @@ Note that the `echo = FALSE` parameter was added to the code chunk to prevent pr
 ```{r}
 # p=1.2的需求量
 p=1.2
-qd <- 10-5*p # 小心是5*p, 不能寫5p
+qd <- 10-5*p   # 小心是5*p, 不能寫5p
 # p=1.3的需求量
 p=1.3
 qd <- 10-5*p
@@ -142,7 +142,7 @@ print(q_d)
 
 /////
 
-  #### 5.2.2 今日天氣
+      #### 5.2.2 今日天氣
 
  ## 住三峽的小雯問：：“Silly，今天天氣如何？”
 
@@ -220,7 +220,7 @@ what_time_it_is("Europe/Paris")
 
 /////
 
-  #### 5.2.3 函數的組成
+        #### 5.2.3 函數的組成
   
   
 ```{r}
@@ -406,13 +406,13 @@ myDemand(1.2) # 5-1.2*P
 
  /////
  
-   #### 5.2.5 預設值
+     #### 5.2.5 預設值
   
-  函數lazy evaluation的特性，讓函數的運作：
+  函數 lazy evaluation 的特性，讓函數的運作：
 
-    ** 具有隨時可改變運作狀態的彈性； 但
+   ** 具有隨時可改變運作狀態的彈性； 但
 
-    **  該工具若落在電腦知識不足的使用者手上會有誤動global environment而產生運作錯誤的危機。
+   ** 該工具若落在電腦知識不足的使用者手上會有誤動global environment而產生運作錯誤的危機。
 
 //
 
@@ -530,10 +530,7 @@ regex_pattern <-
   "(?<=民國)[0-9]+(?=年)"
 
 # 取出民國年，計算西元年
-year <- 
-  str_extract(
-    twDate,
-    regex_pattern)
+year <-  str_extract(twDate, regex_pattern)
 westernYear <- as.integer(year)+1911
 
 # 替換民國xx年的xx成西元年數字
@@ -551,8 +548,7 @@ lubridate::ymd(twDate_reformat)
 ```{r}
 convert_TaiwanDate2WesternDate <- function(twDate){
   library(stringr)
-  regex_pattern <-
-    "(?<=民國)[0-9]+(?=年)"
+  regex_pattern <- "(?<=民國)[0-9]+(?=年)"
   
   # 取出民國年，計算西元年
   year <- 
@@ -749,7 +745,7 @@ askSilly_weather2("臺北市",today())
  
 ///// 
 
- #### 5.3.2 if else
+      #### 5.3.2 if else
  
 ```{r}
 if(condition){
@@ -793,7 +789,8 @@ if(as.logical(n %% 2)){
 ```
  
 ```{r}
-myFun <- function(n){
+myFun <- 
+  function(n){
   if(as.logical(n %% 2)){
     fvalue <- -(n+1)/2
   } else {
@@ -986,7 +983,7 @@ median(examSubmissionTime$howEarly[pick_78])
   
   /////
   
-   #### 5.3.3 if…else if… else
+     #### 5.3.3 if…else if… else
    
 有時流程需要的分歧不只兩種情境，這時可以使用：
 
@@ -1110,7 +1107,7 @@ switch(實現的conditionExpression,  ## class charact
   Mathematical function
 
     * f(n)=n/2      if n is even   ## n %% 2 =0
-    * f(n)=−(n+1)/2 if n is odd    ## n %% 2 =0
+    * f(n)=−(n+1)/2 if n is odd    ## n %% 2 !=0
 
 ```{r}
 ## if else用法
@@ -1235,7 +1232,7 @@ cut(x, c(a,b,c))  ## a< <=b ， b< <=c  ## 將數值轉為類別
   
    會將x分成(a,b], (b,c], 及NA 三大類。
 
-   ** x只要type是integer, double的資料都可使用，所以日期，時間都可以
+   ** x只要type是integer， double的資料都可使用，所以日期，時間都可以
 
    ** (a,b]在數學上是a< . <=b，所以左側a值是「不包含」在裡面的
 

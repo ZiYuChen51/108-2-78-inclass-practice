@@ -400,7 +400,7 @@ levels(list_victimAges_female$年齡層)
 ```
 
 
-####4.4.2 相等，屬於
+    ####  4.4.2 相等，屬於
 
 * ==: 等於
 
@@ -433,7 +433,7 @@ sequenceNums[pick_evens]
 
 還有一個常用的關聯運算：
 
-## %in%: 屬於
+  ## %in%: 屬於
 
 
  * 左邊元素「一一」檢視是不是屬於右邊元素集合。
@@ -530,7 +530,7 @@ is.na(x2)
 ```
 
 
-##example裡誰沒有體重資料
+ ## example裡誰沒有體重資料
 
 ```{r}
 print(example[c("name","weight")])
@@ -540,7 +540,7 @@ example$name[pick_na]
 ```
 
 
-## R還有一種特別的缺失資料 NaN (即not a number)，出現在沒有定義的數學運算上，如：
+  ## R還有一種特別的缺失資料 NaN (即not a number)，出現在沒有定義的數學運算上，如：
 
 ```{r}
 0/0
@@ -819,11 +819,11 @@ lubridate::ymd(
 )
 #補- 要挑出108年和98年,並加上1911變成西元年
 ```
- (lubridate對年只有西元年的概念。
+  ** (lubridate對年只有西元年的概念。
 要能想辦法把上面的“108”,“98”取出加上1911。)
 
 
-## lubridate裡的字串日期時間判斷採取的策略是「忽略非數字文字」只以「數字組合」（還允許各地習慣使用的文字，如March, Mar都是3月的意思）判斷時間，所以以下幾個都可以產生         「西元」“2019-12-05”:
+  ## lubridate裡的字串日期時間判斷採取的策略是「忽略非數字文字」只以「數字組合」（還允許各地習慣使用的文字，如March, Mar都是3月的意思）判斷時間，所以以下幾個都可以產生         「西元」“2019-12-05”:
 
 ```{r}
 lubridate::ymd(
@@ -840,7 +840,7 @@ lubridate::ymd(
 
 *****
 
-#### 4.6.1 Regular expression(regex)
+    #### 4.6.1 Regular expression(regex)
 
 請自RStudio Cheatsheets下載「Work with Strings Cheatsheet」pdf檔
 
@@ -884,7 +884,7 @@ str_view_all(heartSutra,"異色") # 檢視 #補- "異色":固定字組ˇ
 ```
 
 
-  ## 字「群」組合(..|..|..): strip上的出象會出現一組字時用，如“AB|ab”, 可以產生“AB”或“ab”兩種出象。
+  ## 字「群」組合 (..|..|..) : strip上的出象會出現一組字時用，如“AB|ab”, 可以產生“AB”或“ab”兩種出象。
 
   *字群組合規則若很單純前後沒有接其他描述則( )可不寫
 ```{r}
@@ -899,7 +899,7 @@ str_detect(studentIds, "107|108")
 ```
 
 
-  ## 字「元」組合[]: strip上的出象「均」是一個字「元」時用，如[af78]可以產生“a”,“f”,“7”,“8”四種字元出象。
+  ## 字「元」組合 [] : strip上的出象「均」是一個字「元」時用，如[af78]可以產生“a”,“f”,“7”,“8”四種字元出象。
   
   ** 幾種常見的"字元模版"：
   [0-9](或[:digit:])，
@@ -1030,7 +1030,7 @@ stringr::str_extract(addresses,"[0-9]+")
  target在整個字串的位置。
 
 
-  #### 4.6.4 頭尾定位 Anchors:
+    #### 4.6.4 頭尾定位 Anchors:
   
   ** 在開頭：^target_regex
 
@@ -1066,16 +1066,16 @@ str_view(phrase, pattern)
 
 *****
 
-  #### 4.6.5 前後鄰居描述Look around:
+    #### 4.6.5 前後鄰居描述Look around:
   
   target後面是B：target_regex(?=B_regex)： target_pattern後面是年
 
-    ** target前面是A：(?<=A_regex)target_regex：
+  ** target前面是A：(?<=A_regex)target_regex：
              target_pattern前面是民國
 
-    ** target前有A後有B：(?<=A_regex)target_regex(?=B_regex)
+  ** target前有A後有B：(?<=A_regex)target_regex(?=B_regex)
 
-    ** Cheat sheet上還有更多字串處理情境。
+  ** Cheat sheet上還有更多字串處理情境。
 
  //
  
@@ -1127,7 +1127,7 @@ Ans:
 ```
 
 
-## practice2 !
+ ## practice2 !
  之前我們使用str_extract函數粹取出以下地址的“xx號”包含“號”字，如果不要取到「號」字只取出數字，你會怎麼做？
 ```{r}
 addresses <- c(
@@ -1146,7 +1146,7 @@ str_extract(addresses,"[0-9]+(?=號)")
 
 *****
 
-  #### 4.6.6 字元模版
+    #### 4.6.6 字元模版
 
  ** [:graph:] 包山包海，還包中文字元。 #補- 但不包含空格
 
@@ -1211,7 +1211,7 @@ Ans:
  
  ## 05-13 類別資料運算 ##
  
- #### 4.7 On factor class
+    #### 4.7 On factor class
  
  ** 內定levels順序是根據電腦內字元排序（collating sequence）依辭典序列方式決定排序，很多時候沒有意義。
 
@@ -1285,15 +1285,16 @@ levels(covid19$年齡層)
 
  /////
  
- ####4.7.1 levels重新排列
+    ####4.7.1 levels重新排列
  
   重新再定義factor一次
+  
    # factor(目前的factor向量, levels=自訂排序)
 
   
-    ** levels放第二格時， levels= 可省略。
+   ** levels放第二格時， levels= 可省略。
 
-    ** 目前的類別向量的可不可排序性質依然會保留，不用特意去設      ordered=T/F
+   ** 目前的類別向量的可不可排序性質依然會保留，不用特意去設      ordered=T/F
       
   #使用函數時，若argument input就是原help說明裡定義該argument位置時，「argument_name =」部份可以不寫。
 
@@ -1301,15 +1302,15 @@ levels(covid19$年齡層)
  
   ##手動輸入排法：由女男改男女
 ```{r}
-levels(covid19$性別) #補- 女男
-covid19$性別 <- factor(covid19$性別, c("男","女")) #補-男女
+levels(covid19$`性別`) #補- 女男
+covid19$`性別` <- factor(covid19$`性別`, c("男","女")) #補-男女
 levels(covid19$`性別`)
 ```
   
 
 ```{r}
 levels(covid19$`縣市`)
-      covid19$`縣市` <- factor(covid19$`縣市` ,c("台北市","新北市",...))
+      covid19$`縣市` <- factor(covid19$`縣市`,c("台北市","新北市",...))
 ```
 
 
@@ -1427,7 +1428,7 @@ levels(covid19$`年齡層`)
   
 /////
 
-  ##### 4.7.2 levels改名
+     ##### 4.7.2 levels改名
 
   ** levels(x) <- 
   
@@ -1462,7 +1463,7 @@ factor1
   
 /////
 
- ##### 4.7.3 levels整併
+    ##### 4.7.3 levels整併
 
   ** 原本levels是台灣各縣市，你想改成北/中/南/東部四類。
 
@@ -1558,7 +1559,7 @@ newLevels
 
 *****
 
-#### 4.7.4 levels擴充
+    #### 4.7.4 levels擴充
  
  levels <-右邊值的部份包含原本的外，還有想新增的類別。
   
@@ -1625,7 +1626,7 @@ forcats::fct_c(factor1, factor2)
 
  /////
  
- #### 4.7.5 綜合練習
+    #### 4.7.5 綜合練習
  (自行練習丟到練習室上)
  
   ** 1
@@ -1649,7 +1650,7 @@ jsonlite::fromJSON("https://data.ntpc.gov.tw/od/data/api/EDC3AD26-8AE7-4916-A00B
 
  *******
  
- #### 4.8 On list
+     #### 4.8 On list
  
 ```{r}
 library(purrr)
@@ -1657,7 +1658,7 @@ library(purrr)
  
  //
  
- ##### 4.8.1 每個元素相同運算
+    ##### 4.8.1 每個元素相同運算
  
  
  ## 在之前的example物件 
@@ -1689,6 +1690,8 @@ data_selected <-
     allowance=example$allowance[pick_小新],
     bloodType=example$bloodType[pick_小新]
   )
+
+data_selected
 ```
  
 ```{r}
@@ -1714,7 +1717,7 @@ example[[7]][pick_小新]
 
   ** [pick_小新]的動作
 
-  ### purrr底下的map()允許我們
+  ### purrr底下的  map() 允許我們
 
   ** 使用 .x 來代表每個元素，即[[1]], [[2]], ..., [[7]]
         補: .x 表示:對每個元素的意思
@@ -1726,7 +1729,7 @@ example[[7]][pick_小新]
   ** 可以寫成 .x[pick_小新]。
   
   ### 由於 .x[pick_小新]
-  是個公式化的動作，在R，~代表要形成一個公式(formula)，所以
+  是個公式化的動作，在R， ~ 代表要形成一個公式(formula)，所以
 
   **  要寫成   ~ .x[pick_小新]
   
@@ -1747,8 +1750,7 @@ example[[7]][pick_小新]
       ** .x[pick_小新] 的動作
 
 ```{r}
-map(example, ~.x[pick_小新]) -> 
-  data_selected 
+map(example, ~.x[pick_小新]) -> data_selected 
   
 data_selected
 ```
@@ -1780,8 +1782,7 @@ dance[[2]]$title
     **.x$title的動作
     
 ```{r}
-map(dance, ~.x$title) ->
-  list_titles
+map(dance, ~.x$title) -> list_titles
 
 View(list_titles)
 ```
@@ -1805,8 +1806,7 @@ length(dance[[2]]$showInfo)
     ** length(.x$showInfo)的動作
     
 ```{r}
-map(dance,~length(.x$showInfo)) ->
-  list_numberOfShows 
+map(dance,~length(.x$showInfo)) -> list_numberOfShows 
   
 View(list_numberOfShows)
 ```
@@ -1828,9 +1828,7 @@ dance[[4]]$showInfo[[2]]$time
     ** 進行 .x$time 動作  
 
 ```{r}
-map(dance[[4]]$showInfo, ~ .x$time) ->
-  
-list_showTimes_dance4  ##一直變的就是 .x
+map(dance[[4]]$showInfo, ~ .x$time) -> list_showTimes_dance4  ##一直變的就是 .x
 
 view(list_showTimes_dance4)
 ```
@@ -1856,7 +1854,7 @@ map(chr, ~ str_extract_all(.x , "[ad]"))
 
 *****
 
-  #### 4.8.2 綜合練習
+    #### 4.8.2 綜合練習
 
  ## 1.
  新北市公車路線清單
@@ -1903,7 +1901,7 @@ weather_next36hours$cwbopendata$dataset$location$weatherElement[[1]]$elementName
 //////  第 5 章 Programming
 
 
-  ##### 5.1 Pipe
+    ##### 5.1 Pipe
 
   ## 範例1
 ```{r}
@@ -1926,6 +1924,7 @@ names(sorted_heights) -> sorted_persons
 
 # 接著取出第一個位置的人名
 sorted_persons[[1]] -> highestPerson
+highestPerson
 ```
  
  ## 寫法二 有些同學會寫成
@@ -1939,7 +1938,6 @@ names(sort(threeHeigths, decreasing = T))[[1]] -> highestPerson
 library(magrittr)
 ```
   
-
 
  ## 可將寫法一變成串接無中間物件的方式：
 ```{r}
@@ -1965,7 +1963,7 @@ sorted_persons[[1]] -> highestPerson
 
 ///// 
 
- #### 5.1.1 原則
+    #### 5.1.1 原則
 
   ## Pipe原則：
 ```{r}
@@ -2021,7 +2019,7 @@ levels(region) %>%
 
  /////
  
-  #### 5.1.2 元素粹取
+     #### 5.1.2 元素粹取
   
   其實元素粹取符號 $, [], [[]] 也是函數,    要被取出元素的物件是第一個input，而取元素的位置資訊則是第二個input。
 
@@ -2047,7 +2045,7 @@ num[pick_big]
 
  /////
  
-   ##### 5.1.3 執行順序
+     ##### 5.1.3 執行順序
 
  
  ## R在面對pipe時會先把pipe走完最後才去做值assign給最後物件的動作，例如:
@@ -2077,7 +2075,7 @@ highestPerson <-
  //////
  
  
- #####  5.1.4   .省略原則
+    #####  5.1.4   .省略原則
  
  
     **  若代表中間物件的 . 在函數的「第一位」則 . *可省略不寫， 連它後面的,也去掉。小心若不在第一位則不可做省略 . 動作。
@@ -2109,11 +2107,13 @@ cities <- c("cityA","cityA","cityB","cityB","cityC")
 
 # 分析步驟
 names(sort(population)) -> setLevels
+setLevels
 factor(cities, levels = setLevels) -> cities 
+cities 
 ```
 
 ```{r}
-## 2105 2106行 用串接寫法
+## 用串接寫法
 names(sort(population)) %>%
   factor(cities, levels = .) -> cities
 ```
@@ -2121,7 +2121,7 @@ names(sort(population)) %>%
 ```{r}
 ##2101~2106 錯誤串接寫法 : 因為串接是串接在一個函數內 , 每個階段只能串接一個函數
 population %>%
-  names(sort(.)) %>%     ##此行會出問題
+  names(sort(.)) %>%     ## 此行會出問題
   factor(cities, levels=.) -> cities
 ```
 
@@ -2149,9 +2149,9 @@ population %>%
  /////
  
  
- #### 5.1.5 串接非單純函數程序
+    #### 5.1.5 串接非單純函數程序
     
-    ** 若遇到pipe 串接的下一段並不是單純的函數的話，可以用{}把此段內容括起來並把中間物件要放的位置換成.。
+   ** 若遇到pipe 串接的下一段並不是單純的函數的話，可以用{}把此段內容括起來並把中間物件要放的位置換成.。
     
     
  ## 範例3
@@ -2178,7 +2178,7 @@ num_element[[1]][pick_big] -> bigNumber
 ```{r}
 is.numeric(dataList[[1]])
 is.numeric(dataList[[2]])
-map(dataList, ~ is.numeric(.x)) -> results ##同2162行 ,因為 map如果對於每一個元素所要做的事情,是用某一個固定的函數去達成的話,可以止血函數名稱就好(2162行),
+map(dataList, ~ is.numeric(.x)) -> results ##同2162行 ,因為 map如果對於每一個元素所要做的事情,是用某一個固定的函數去達成的話,可以只寫函數名稱就好(2162行),
 ```
 
   串接1: 
